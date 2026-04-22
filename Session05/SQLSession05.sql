@@ -135,9 +135,7 @@ GROUP BY  c.name
 HAVING tong_tien > 100000;
 
 -- Tính Doanh Thu Theo món ăn : Tên món ăn , tiền theo món ăn đó đã bán được
-
-
-
+-- BTTH 
 CREATE TABLE Users (
 	user_id INT PRIMARY KEY, 
 	full_name VARCHAR(100));
@@ -156,8 +154,6 @@ INSERT INTO Users VALUES
 (6,'Vũ Hải F'), (7,'Đặng Thu G'), (8,'Bùi Quang H'), (9,'Đỗ Thùy I'), (10,'Ngô Bảo K'),
 (11,'Lý Triều L'), (12,'Phan Nam M'), (13,'Trịnh Văn N'), (14,'Hồ Xuân O'), (15,'Trương Mỹ P'),
 (16,'Đinh Quang Q'), (17,'Lương Gia R'), (18,'Võ Văn S'), (19,'Diệp Lan T'), (20,'Cao Minh U');
-
-
 INSERT INTO Hotels VALUES 
 (101,'Sheraton',5), 
 (102,'InterContinental',5), 
