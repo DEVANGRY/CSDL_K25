@@ -202,7 +202,6 @@ CREATE VIEW v_sinhVien AS (
 );
 
 SELECT * FROM v_sinhVien;
-
 UPDATE v_sinhVien
 SET gioitinh = 'Nữ'
 WHERE masv = "SV001";
@@ -242,4 +241,77 @@ LEFT JOIN sinhvien AS sv
 ON k.makhoa = sv.makhoa
 LEFT JOIN diem AS d 
 ON d.masv = sv.masv
-GROUP BY k.tenkhoa
+GROUP BY k.tenkhoa;
+
+SELECT * FROM sinhvien;
+
+DELIMITER //
+CREATE PROCEDURE LayThongTinSinhVien(
+	IN p_masv VARCHAR(5)
+)
+BEGIN
+	SELECT * FROM sinhvien 
+    WHERE sinhvien.masv = p_masv;
+END // 
+DELIMITER ;
+
+CALL LayThongTinSinhVien("SV001");
+DROP DATABASE `db_delimiter_c_procedure`;
+CREATE DATABASE `delimiter_c_procedure_declare`;
+
+DELIMITER // 
+CREATE PROCEDURE getData (
+	IN p_param1 VARCHAR(10)
+)
+BEGIN 
+	DECLARE pv_number INT DEFAULT 0; 
+END
+// DELIMITER ;
+
+SELECT * FROM diem;	
+
+DELIMITER // 
+CREATE PROCEDURE sp_xeploaihocluc (
+	IN p_masv VARCHAR(5),
+    OUT p_xeploai VARCHAR(20)
+)
+BEGIN 
+	DECLARE diemTB DECIMAL(10,2);
+    SELECT AVG(diem.masv) INTO diemTB FROM diem
+    WHERE diem.masv = p_masv;
+    
+    IF diemTB >= 9.0 THEN
+		SET p_xeploai = 'Xuất Sắc';
+	ELSEIF diemTB > 8.0 THEN
+		SET p_xeploai = "Giỏi";
+	ELSE
+		SET p_xeploai = "Trung bình";
+	END IF;
+END
+// DELIMITER ;
+
+CALL sp_xeploaihocluc ("SV001", @ketqua);
+SELECT "SV001" AS `Mã Sinh Viên` , @ketqua AS "Xếp loại";
+
+
+-- Tạo một PROCEDURE sp_thongkethongtinkhoa : thống kê thông tin khóa
+-- Nhận tham số là mã khoa , ouput : là số lượng sinh viên trong khóa , điểm trung bình khóa 
+
+DELIMITER // 
+CREATE PROCEDURE sp_thongkethongtinkhoa (
+	IN p_makhoa VARCHAR(10) ,
+    OUT p_soluongsinhvien INT,
+    OUT p_trungbinh FLOAT
+)
+BEGIN 
+	SELECT COUNT(DISTINCT sv.masv) , ROUND(AVG(d.diem))  
+    INTO p_soluongsinhvien , p_trungbinh
+    FROM diem as d
+    right JOIN sinhvien as sv 
+    ON d.masv = sv.masv
+    WHERE sv.makhoa = p_makhoa
+    GROUP BY sv.makhoa;
+END
+// DELIMITER ;
+
+DROP PROCEDURE LayThongTinSinhVien
